@@ -1,0 +1,89 @@
+<?php
+
+class ProductManager {
+    private $products = [];
+
+    // Thêm mới sản phẩm
+    public function addProduct($name, $price, $quantity, $category) {
+        $this->products[] = array(
+            'name' => $name,
+            'price' => $price,
+            'quantity' => $quantity,
+            'category' => $category
+        );
+    }
+
+    // Sửa thông tin sản phẩm
+    public function editProduct($index, $name, $price, $quantity) {
+        if (isset($this->products[$index])) {
+            $this->products[$index]['name'] = $name;
+            $this->products[$index]['price'] = $price;
+            $this->products[$index]['quantity'] = $quantity;
+        } else {
+            echo "Sản phẩm không tồn tại.";
+        }
+    }
+
+    // Xóa sản phẩm
+    public function deleteProduct($index) {
+        if (isset($this->products[$index])) {
+            unset($this->products[$index]);
+            $this->products = array_values($this->products); // Re-index array after unset
+        } else {
+            echo "Sản phẩm không tồn tại.";
+        }
+    }
+
+    // Tìm kiếm sản phẩm theo tên
+    public function searchProductByName($name) {
+        $foundProducts = [];
+        foreach ($this->products as $product) {
+            if (strpos($product['name'], $name) !== false) {
+                $foundProducts[] = $product;
+            }
+        }
+        return $foundProducts;
+    }
+
+    // Sắp xếp sản phẩm theo giá (tăng dần/giảm dần)
+    public function sortProductsByPrice($order = 'ASC') {
+        $prices = array_column($this->products, 'price');
+        array_multisort($prices, $order == 'ASC' ? SORT_ASC : SORT_DESC, $this->products);
+    }
+
+    // In danh sách sản phẩm theo danh mục
+    public function printProductsByCategory($category) {
+        foreach ($this->products as $product) {
+            if ($product['category'] == $category) {
+                echo "Tên: " . $product['name'] . ", Giá: " . $product['price'] . ", Số lượng: " . $product['quantity'] . "\n";
+            }
+        }
+    }
+
+    // In danh sách sản phẩm
+    public function printAllProducts() {
+        foreach ($this->products as $product) {
+            echo "Tên: " . $product['name'] . ", Giá: " . $product['price'] . ", Số lượng: " . $product['quantity'] . ", Danh mục: " . $product['category'] . "\n";
+        }
+    }
+}
+
+// Sử dụng
+$productManager = new ProductManager();
+$productManager->addProduct("Sản phẩm 1", 100, 10, "Danh mục A");
+$productManager->addProduct("Sản phẩm 2", 50, 5, "Danh mục B");
+$productManager->addProduct("Sản phẩm 3", 200, 8, "Danh mục A");
+
+echo "Danh sách sản phẩm:\n";
+$productManager->printAllProducts();
+
+echo "\nTìm kiếm sản phẩm theo tên:\n";
+$foundProducts = $productManager->searchProductByName("Sản phẩm");
+print_r($foundProducts);
+
+echo "\nSắp xếp sản phẩm theo giá (tăng dần):\n";
+$productManager->sortProductsByPrice();
+$productManager->printAllProducts();
+
+echo "\nIn danh sách sản phẩm theo danh mục 'Danh mục A':\n";
+$productManager->printProductsByCategory("Danh mục A");
