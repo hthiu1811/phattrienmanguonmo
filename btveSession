@@ -1,0 +1,98 @@
+<?php
+session_start();
+
+// Kiểm tra nếu người dùng đã đăng nhập trước đó
+if(isset($_SESSION['username'])) {
+    header("Location: home.php");
+    exit();
+}
+
+// Kiểm tra xem người dùng đã gửi yêu cầu đăng nhập chưa
+if($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Kiểm tra tên đăng nhập và mật khẩu
+    $username = $_POST['username'];
+    $password = $_POST['password'];
+
+    // Trong một ứng dụng thực tế, bạn cần thực hiện kiểm tra dữ liệu với cơ sở dữ liệu
+    // Ở đây, chúng ta sẽ giả định rằng tên đăng nhập và mật khẩu đều là "admin"
+    if($username == 'admin' && $password == 'admin') {
+        // Đăng nhập thành công, thiết lập session và cookie
+        $_SESSION['username'] = $username;
+
+        // Thiết lập cookie với thời gian sống là 1 giờ
+        setcookie('username', $username, time() + 3600, '/');
+
+        // Chuyển hướng đến trang chủ
+        header("Location: home.php");
+        exit();
+    } else {
+        $error = "Tên đăng nhập hoặc mật khẩu không đúng!";
+    }
+}
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng nhập</title>
+</head>
+<body>
+    <h2>Đăng nhập</h2>
+    <?php if(isset($error)) { ?>
+        <p><?php echo $error; ?></p>
+    <?php } ?>
+    <form method="post">
+        <label for="username">Tên đăng nhập:</label><br>
+        <input type="text" id="username" name="username" required><br>
+        <label for="password">Mật khẩu:</label><br>
+        <input type="password" id="password" name="password" required><br><br>
+        <button type="submit">Đăng nhập</button>
+    </form>
+</body>
+</html>
+home.php - Trang chủ sau khi đăng nhập thành công:
+php
+Copy code
+<?php
+session_start();
+
+// Kiểm tra nếu người dùng chưa đăng nhập, chuyển hướng về trang đăng nhập
+if(!isset($_SESSION['username'])) {
+    header("Location: index.php");
+    exit();
+}
+
+// Lấy thông tin người dùng từ session
+$username = $_SESSION['username'];
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trang chủ</title>
+</head>
+<body>
+    <h2>Xin chào, <?php echo $username; ?>!</h2>
+    <p><a href="logout.php">Đăng xuất</a></p>
+</body>
+</html>
+logout.php - Xử lý đăng xuất:
+php
+Copy code
+<?php
+session_start();
+
+// Hủy session
+session_destroy();
+
+// Hủy cookie
+setcookie('username', '', time() - 3600, '/');
+
+// Chuyển hướng về trang đăng nhập
+header("Location: index.php");
+exit();
+?>
