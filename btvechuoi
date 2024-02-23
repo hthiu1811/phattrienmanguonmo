@@ -1,0 +1,55 @@
+BT1. Loại bỏ các khoảng trắng thừa trong chuỗi:
+
+<?php
+function removeExtraSpaces($str) {
+    return preg_replace('/\s+/', ' ', $str);
+}
+$input = "   This    is   a    test   ";
+$output = removeExtraSpaces($input);
+echo "Chuỗi ban đầu: '$input'<br>";
+echo "Chuỗi sau khi loại bỏ khoảng trắng thừa: '$output'";
+?>
+BT2. Cắt chuỗi:
+
+<?php
+function cutString($str, $start, $length) {
+    return substr($str, $start, $length);
+}
+
+$input = "This is a test string";
+$output = cutString($input, 5, 7);
+echo "Chuỗi ban đầu: '$input'<br>";
+echo "Chuỗi sau khi cắt: '$output'";
+?>
+BT3. Mã hóa chuỗi bằng MD5:
+
+<?php
+$input = "This is a test string";
+$hashedString = md5($input);
+echo "Chuỗi ban đầu: '$input'<br>";
+echo "Chuỗi sau khi mã hóa MD5: '$hashedString'";
+?>
+BT4. So sánh hai chuỗi:
+
+<?php
+$str1 = "Hello";
+$str2 = "hello";
+
+if (strcasecmp($str1, $str2) == 0) {
+    echo "Hai chuỗi giống nhau.";
+} else {
+    echo "Hai chuỗi không giống nhau.";
+}
+?>
+BT5. Thay thế một chuỗi con trong chuỗi mẹ:
+
+<?php
+function replaceSubstring($str, $old, $new) {
+    return str_replace($old, $new, $str);
+}
+
+$input = "This is a test string";
+$output = replaceSubstring($input, "test", "example");
+echo "Chuỗi ban đầu: '$input'<br>";
+echo "Chuỗi sau khi thay thế: '$output'";
+?>
