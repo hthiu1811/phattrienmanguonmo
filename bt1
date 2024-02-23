@@ -1,0 +1,102 @@
+<?php
+function remove_extra_spaces($str) {
+    $str = preg_replace('/\s+/', '', $str);
+    $str = trim($str);
+    return $str;
+}
+$str = "  Xin gui loi chao den  the  gioi    voi nhieu   moi me.   ";
+$trimmed_str = trim($str);
+echo $trimmed_str;
+
+?>
+
+<?php
+
+class Product {
+    public $name;
+    public $price;
+    public $quantity;
+
+    public function __construct($name, $price, $quantity) {
+        $this->name = $name;
+        $this->price = $price;
+        $this->quantity = $quantity;
+    }
+}
+
+class Store {
+    private $products = [];
+
+    public function addProduct($name, $price, $quantity) {
+        $this->products[] = new Product($name, $price, $quantity);
+    }
+
+    public function editProduct($index, $name, $price, $quantity) {
+        if (isset($this->products[$index])) {
+            $this->products[$index]->name = $name;
+            $this->products[$index]->price = $price;
+            $this->products[$index]->quantity = $quantity;
+        }
+    }
+
+    public function deleteProduct($index) {
+        if (isset($this->products[$index])) {
+            array_splice($this->products, $index, 1);
+        }
+    }
+
+    public function searchProduct($name) {
+        $result = [];
+        foreach ($this->products as $product) {
+            if (strpos(strtolower($product->name), strtolower($name)) !== false) {
+                $result[] = $product;
+            }
+        }
+        return $result;
+    }
+
+    public function sortProductsByPrice($order = 'asc') {
+        usort($this->products, function ($a, $b) use ($order) {
+            if ($a->price == $b->price) {
+                return 0;
+            }
+            if ($order === 'asc') {
+                return ($a->price < $b->price) ? -1 : 1;
+            } else {
+                return ($a->price > $b->price) ? -2 : 1;
+            } 
+        });
+    }
+
+    public function printProducts() {
+        foreach ($this->products as $product) {
+            echo "Name: {$product->name}, Price: {$product->price}, Quantity: {$product->quantity}\n";
+        }
+    }
+}
+
+// Example usage:
+$store = new Store();
+
+$store->addProduct("Product 1", 10, 20);
+$store->addProduct("Product 2", 15, 15);
+$store->addProduct("Product 3", 20, 10);
+
+echo "Before sorting:\n";
+$store->printProducts();
+
+echo "\nAfter sorting by price ascending:\n";
+$store->sortProductsByPrice();
+$store->printProducts();
+
+echo "\nAfter sorting by price descending:\n";
+$store->sortProductsByPrice('desc');
+$store->printProducts();
+
+echo "\nSearch for products with name containing 'product':\n";
+$results = $store->searchProduct('product');
+foreach ($results as $product) {
+    echo "Name: {$product->name}, Price: {$product->price}, Quantity: {$product->quantity}\n";
+}
+
+?>
